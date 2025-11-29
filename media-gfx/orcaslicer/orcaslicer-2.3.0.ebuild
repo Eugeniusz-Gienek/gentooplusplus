@@ -7,7 +7,7 @@ EAPI=8
 
 DESCRIPTION="Orca Slicer is a free 3D printing slicer created by SoftFever."
 
-HOMEPAGE="https://orca-slicer.com/"
+HOMEPAGE="https://www.orcaslicer.com/"
 
 INSTALL_DIR="/opt/orcaslicer/"
 
