@@ -20,6 +20,7 @@ BEPEND="virtual/pkgconfig"
 RDEPEND="\
     acct-user/media\
     acct-group/media\
+    app-admin/sudo\
 "
 
 DEPEND="\
@@ -85,13 +86,22 @@ src_install() {
     cp -f "${FILESDIR}/installer-cli.sh" peertube-installer-cli || die
     dosbin peertube-installer-cli
     #cd "${D}${INSTALL_DIR}/peertube-latest"
-    cd "${D}${INSTALL_DIR}/versions/${PV}"
-    npm run install-node-dependencies -- --production
+    #cd "${D}${INSTALL_DIR}/versions/${PV}"
+    #npm run install-node-dependencies -- --production
     cd "${D}${INSTALL_DIR}"
-    cp "${D}${INSTALL_DIR}/versions/${PV}/config/default.yaml" config/default.yaml
+    #cp "${D}${INSTALL_DIR}/versions/${PV}/config/default.yaml" config/default.yaml
     #cp "${D}${INSTALL_DIR}/versions/${PV}peertube-latest/config/production.yaml.example" config/production.yaml
-    cp "${D}${INSTALL_DIR}/versions/${PV}/config/production.yaml.example" config/production.yaml
+    #cp "${D}${INSTALL_DIR}/versions/${PV}/config/production.yaml.example" config/production.yaml
     chown -R media:media config
     chown -R media:media "${D}${INSTALL_DIR}"
     cd "${D}"
+}
+
+pkg_postinst() {
+    cd "${INSTALL_DIR}/versions/${PV}"
+    npm run install-node-dependencies -- --production
+    cd "${INSTALL_DIR}"
+    cp "${INSTALL_DIR}/versions/${PV}/config/default.yaml" config/default.yaml
+    cp "${INSTALL_DIR}/versions/${PV}/config/production.yaml.example" config/production.yaml
+    chown -R media:media config
 }
