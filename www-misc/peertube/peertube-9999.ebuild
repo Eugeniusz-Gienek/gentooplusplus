@@ -20,8 +20,8 @@ BEPEND="virtual/pkgconfig"
 RDEPEND="\
     acct-user/media\
     acct-group/media\
-    app-admin/sudo\
 "
+#    app-admin/sudo\
 
 DEPEND="\
     ${RDEPEND}\
