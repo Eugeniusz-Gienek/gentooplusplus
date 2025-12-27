@@ -13,7 +13,14 @@ HOMEPAGE="https://joinpeertube.org/"
 LICENSE="AGPL-3.0"
 SLOT="0"
 
-IUSE=""
+IUSE="
++nginx
+nginx_mainline
+"
+
+REQUIRED_USE="
+^^ ( nginx nginx_mainline )
+"
 
 BEPEND="virtual/pkgconfig"
 
@@ -37,8 +44,10 @@ DEPEND="\
     app-arch/unzip\
     dev-lang/python\
     dev-lang/python-exec\
-    www-servers/nginx[threads,aio]\
+    nginx? ( www-servers/nginx[aio] )\
+    nginx_mainline? ( www-servers/nginx:mainline[aio] )\
 "
+#    www-servers/nginx[threads,aio]\
 
 DISTUTILS_IN_SOURCE_BUILD=
 
@@ -78,7 +87,7 @@ src_install() {
     mkdir -p "${D}${INSTALL_DIR}/versions/${PV}"
     mkdir -p "${D}etc/nginx/sites-available"
     cp -R -f "${WORKDIR}/${MY_P}/." "${D}${INSTALL_DIR}/versions/${PV}/" || die "Install failed!"
-    chown -R media:media "${D}${INSTALL_DIR}"
+    #chown -R media:media "${D}${INSTALL_DIR}" || die "Could not set correct ownership. Please make sure that acct-user/media and acct-group/media packages are installed (they are mentioned in package dependencies)."
     cp -f "${FILESDIR}/installer-cli.sh" "${D}${INSTALL_DIR}/"
     chmod +x "${D}${INSTALL_DIR}/installer-cli.sh"
     echo "${PV}-${RANDOM}" > "${D}${INSTALL_DIR}/package_version.txt"
@@ -92,12 +101,14 @@ src_install() {
     #cp "${D}${INSTALL_DIR}/versions/${PV}/config/default.yaml" config/default.yaml
     #cp "${D}${INSTALL_DIR}/versions/${PV}peertube-latest/config/production.yaml.example" config/production.yaml
     #cp "${D}${INSTALL_DIR}/versions/${PV}/config/production.yaml.example" config/production.yaml
-    chown -R media:media config
-    chown -R media:media "${D}${INSTALL_DIR}"
-    cd "${D}"
+    #chown -R media:media config
+    #chown -R media:media "${D}${INSTALL_DIR}"
+    #cd "${D}"
 }
 
 pkg_postinst() {
+    cd "${INSTALL_DIR}"
+    chown -R media:media ./
     cd "${INSTALL_DIR}/versions/${PV}"
     npm run install-node-dependencies -- --production
     cd "${INSTALL_DIR}"

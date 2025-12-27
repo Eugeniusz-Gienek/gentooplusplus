@@ -11,7 +11,7 @@
 		<remote-id type="github">chocobozzz/peertube</remote-id>
 	</upstream>
 	<use>
-		<!--flag name="systemd">Create a systemd service "peertube.service".</flag>
-		<flag name="nginx">Create nginx configuration.</flag-->
+		<flag name="nginx">Use regular www-servers/nginx as a web server for peertube.</flag>
+		<flag name="nginx_mainline">Use www-servers/nginx:mainline as a web server for peertube.</flag>
 	</use>
 </pkgmetadata>
