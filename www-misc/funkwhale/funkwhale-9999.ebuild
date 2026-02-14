@@ -32,7 +32,7 @@ DEPEND="\
     >=dev-db/postgresql-12.0\
     >=dev-db/redis-6.0\
     >=media-video/ffmpeg-4.3\
-    nginx? ( www-servers/nginx[http2,nginx_modules_http_proxy,ssl] )\
+    nginx? ( www-servers/nginx[nginx_modules_http_proxy,nginx_modules_http_ssl] )\
     apache? ( www-servers/apache[apache2_modules_proxy,apache2_modules_proxy_http2,apache2_modules_http2,ssl] )\
     dev-perl/File-LibMagic\
     dev-python/python-magic\
