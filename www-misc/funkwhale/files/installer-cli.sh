@@ -109,6 +109,9 @@ sudo -u $FUNKWHALE_USER ${INSTALLED_DIR}/venv/bin/funkwhale-manage collectstatic
 chmod 600 $INSTALLED_DIR/config/.env
 chown $FUNKWHALE_USER:$FUNKWHALE_USER $INSTALLED_DIR/config/.env
 cd "${INSTALLED_DIR}/front"
+echo "Installling corepack..."
+npm install -g corepack --force
+sudo -u $FUNKWHALE_USER corepack enable
 echo "[ INFO ] Building frontend (installing yarn)"
 sudo -u $FUNKWHALE_USER yarn install
 echo "[ INFO ] Building frontend (building itself)"

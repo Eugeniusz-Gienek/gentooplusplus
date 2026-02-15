@@ -122,6 +122,9 @@ then
     fi
 fi
 cd "${INSTALLED_DIR}/front"
+echo "Installling corepack..."
+npm install -g corepack --force
+sudo -u $FUNKWHALE_USER corepack enable
 echo "[ INFO ] Building frontend (installing yarn)"
 sudo -u $FUNKWHALE_USER yarn install
 echo "[ INFO ] Building frontend (building itself)"
