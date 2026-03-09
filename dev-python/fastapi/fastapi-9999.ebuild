@@ -20,6 +20,7 @@ SLOT="0"
 BEPEND="
 	virtual/pkgconfig
 	>=dev-python/cython-0.24.0[${PYTHON_USEDEP}]
+        dev-python/pdm-backend
 "
 #DEPEND=""
 #RDEPEND="${DEPEND}"
