@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_11 python3_12 )
+PYTHON_COMPAT=( python3_11 python3_12 python3_13 )
 
 #python3_13 doesn't work yet due to broken dependencies on backend.
 
@@ -37,7 +37,7 @@ DEPEND="\
 #    nginx? ( www-servers/nginx[http2,nginx_modules_http_proxy,ssl] )\
 #    apache? ( www-servers/apache[apache2_modules_proxy,apache2_modules_proxy_http2,apache2_modules_http2,ssl] )\
 
-REQUIRED_USE="^^ ( python_single_target_python3_11 python_single_target_python3_12 )"
+REQUIRED_USE="^^ ( python_single_target_python3_11 python_single_target_python3_12 python_single_target_python3_13 )"
 
 DISTUTILS_IN_SOURCE_BUILD=
 
