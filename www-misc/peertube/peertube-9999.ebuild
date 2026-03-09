@@ -32,7 +32,7 @@ RDEPEND="\
 
 DEPEND="\
     ${RDEPEND}\
-    >=net-libs/nodejs-20.9[npm]\
+    >=net-libs/nodejs-20.19[npm]\
     <=net-libs/nodejs-22.0[npm]\
     <sys-apps/yarn-2.0\
     >=sys-apps/yarn-1.0\
