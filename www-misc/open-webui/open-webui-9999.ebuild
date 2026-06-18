@@ -4,7 +4,8 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_11 python3_12 python3_13 )
+#PYTHON_COMPAT=( python3_11 python3_12 python3_13 )
+PYTHON_COMPAT=( python3_12 python3_13 python3_14 )
 
 #python3_13 doesn't work yet due to broken dependencies on backend.
 
@@ -37,7 +38,8 @@ DEPEND="\
 #    nginx? ( www-servers/nginx[http2,nginx_modules_http_proxy,ssl] )\
 #    apache? ( www-servers/apache[apache2_modules_proxy,apache2_modules_proxy_http2,apache2_modules_http2,ssl] )\
 
-REQUIRED_USE="^^ ( python_single_target_python3_11 python_single_target_python3_12 python_single_target_python3_13 )"
+# REQUIRED_USE="^^ ( python_single_target_python3_11 python_single_target_python3_12 python_single_target_python3_13 )"
+REQUIRED_USE="^^ ( python_single_target_python3_12 python_single_target_python3_13 python_single_target_python3_14 )"
 
 DISTUTILS_IN_SOURCE_BUILD=
 
@@ -101,10 +103,14 @@ pkg_postinst() {
     fi
     ln -sf "${EROOT}${CONFIG_DIR}/.env" "${EROOT}${INSTALL_DIR}/.env"
     #if ! command -v python3.12 >/dev/null 2>&1
-    if use python_single_target_python3_11;then
-        PYTHON_EXECUTABLE="python3.11"
-    else
+    if use python_single_target_python3_12;then
         PYTHON_EXECUTABLE="python3.12"
+    else
+        if use python_single_target_python3_13;then
+            PYTHON_EXECUTABLE="python3.13"
+        else
+            PYTHON_EXECUTABLE="python3.14"
+        fi
     fi
     npm install --force
     npm run build
@@ -118,6 +124,11 @@ pkg_postinst() {
         sed -i "s,rapidocr-onnxruntime==1.4.4,rapidocr-onnxruntime>=1.4.4," "requirements.txt"
     fi
     pip install -r requirements.txt -U
+    pip install -y uvicorn typer aiohttp anyio aiocache fastapi redis sqlalchemy itsdangerous starlette_compress starsessions requests authlib httpx markdown bs4 aiosqlite alembic mimeparse chromadb jwt pytz aiofiles pydub audioop-lts python-multipart ldap3 mcp validators langchain_community pycrdt python-socketio[asyncio_client] tiktoken ddgs boto3 azure-mgmt-storage azure-mgmt-resource azure-keyvault-secrets azure-storage-blob azure-mgmt-compute azure-identity google.cloud
+    pip install -y --upgrade google-cloud-storage
+    pip install -y black fpdf loguru asgiref
+    pip install -y sentence_transformers
+    pip install -y ffmpeg-downloader
     deactivate
     chown -R genai:genai "${EROOT}${INSTALL_DIR}"
     chmod 644 "${EROOT}${CONFIG_DIR}/.env"

@@ -1,1 +1,1 @@
-open-webui-9999.ebuild
+open-webui-0.6.25.ebuild

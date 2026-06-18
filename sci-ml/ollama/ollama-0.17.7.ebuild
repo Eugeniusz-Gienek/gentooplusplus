@@ -1,9 +1,9 @@
-# Copyright 1999-2025 Gentoo Authors
+# Copyright 1999-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit systemd desktop xdg-utils
+inherit systemd desktop xdg-utils unpacker
 
 DESCRIPTION="Ollama - get up and running with large language models."
 HOMEPAGE="https://ollama.com/"
@@ -15,6 +15,9 @@ REQUIRED_USE="
     cpuonly? ( systemd )
 "
 BEPEND="virtual/pkgconfig"
+
+# BDEPEND="app-arch/zstd"
+BDEPEND="$(unpacker_src_uri_depends)"
 
 RDEPEND="\
     acct-user/genai\
@@ -39,8 +42,21 @@ MY_PN="ollama"
 MY_P=${MY_PN}-${MY_PV}
 KEYWORDS="~amd64 ~arm64"
 #SRC_URI="https://github.com/ollama/ollama/releases/download/v${PV}/ollama-linux-${ARCH}.tgz -> ${P}.gh.tgz"
-SRC_URI="https://github.com/ollama/ollama/releases/download/v0.17.7/ollama-linux-${ARCH}.tar.zst -> ${P}.gh.tar.zst"
+#SRC_URI="https://github.com/ollama/ollama/releases/download/v${PV}/ollama-linux-${ARCH}.tar.zst -> ${P}.tar.zst"
+SRC_URI="https://github.com/ollama/ollama/releases/download/v0.17.7/ollama-linux-${ARCH}.tar.zst -> ${P}.tar.zst"
 S="${WORKDIR}/"
+
+
+src_unpack() {
+	die() { eerror "$*" 1>&2 ; exit 1; }
+	pwd
+	if [[ -n ${A} ]]; then
+		echo "Unpacking...."
+		#unpack ${A} || die "Unpack failed!"
+		unpacker ${A} || die "Unpack failed!"
+		echo "Unpacking finished."
+	fi
+}
 
 
 src_prepare() {
@@ -73,14 +89,14 @@ src_install() {
     done
     #patchelf --set-rpath "$(IFS=":"; echo "${_patchelf_paths[*]}:\$ORIGIN")" "./usr/lib/ollama/libggml-base.so" || die
     if use systemd; then
-        OLLAMA_WAS_ACTIVE=$(systemctl is-active ollama)
+        #OLLAMA_WAS_ACTIVE=$(systemctl is-active ollama)
         #einfo "Stopping systemd service."
         #systemctl stop ollama.service
         einfo "Installing new systemd service."
         if use cpuonly; then
-            systemd_newunit "${FILESDIR}"/ollama-cpu.service ollama.service
+            systemd_newunit "${FILESDIR}"/ollama-cpu.service ollama.service || die
         else
-            systemd_newunit "${FILESDIR}"/ollama.service ollama.service
+            systemd_newunit "${FILESDIR}"/ollama.service ollama.service || die
         fi
         #einfo "Restarting systemd daemon."
         #systemctl daemon-reload

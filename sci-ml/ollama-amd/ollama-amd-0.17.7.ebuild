@@ -4,6 +4,7 @@
 EAPI=8
 
 #inherit systemd
+inherit unpacker
 
 DESCRIPTION="Ollama - get up and running with large language models - additional amd package"
 HOMEPAGE="https://ollama.com/"
@@ -14,6 +15,9 @@ SLOT="0"
 IUSE=""
 
 BEPEND="virtual/pkgconfig"
+
+# BDEPEND="app-arch/zstd"
+BDEPEND="$(unpacker_src_uri_depends)"
 
 RDEPEND="\
     acct-user/genai\
@@ -40,11 +44,23 @@ SRC_URI="https://github.com/ollama/ollama/releases/download/v${PV}/ollama-linux-
 S="${WORKDIR}/"
 
 
+
+
+src_unpack() {
+	die() { eerror "$*" 1>&2 ; exit 1; }
+	pwd
+	if [[ -n ${A} ]]; then
+		echo "Unpacking...."
+		#unpack ${A} || die "Unpack failed!"
+		unpacker ${A} || die "Unpack failed!"
+		echo "Unpacking finished."
+	fi
+}
+#/var/tmp/portage/sci-ml/ollama-amd-0.13.0/image/usr/lib/ollama/rocm/libggml-hip.so
+
 src_prepare() {
     default
 }
-
-#/var/tmp/portage/sci-ml/ollama-amd-0.13.0/image/usr/lib/ollama/rocm/libggml-hip.so
 
 src_install() {
     die() { echo "$*" 1>&2 ; exit 1; }
