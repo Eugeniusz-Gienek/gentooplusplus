@@ -1,1 +1,1 @@
-sd-swarmui-web-9999.ebuild
+sd-swarmui-web-0.9.6.ebuild

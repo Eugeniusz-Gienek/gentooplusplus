@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{12..14} )
 
 inherit systemd desktop xdg-utils python-single-r1
 
@@ -24,14 +24,13 @@ cpu
 rdna2
 rdna3
 amd_mae
-python_single_target_python3_10
-python_single_target_python3_11
 python_single_target_python3_12
 python_single_target_python3_13
+python_single_target_python3_14
 +comfyui
 "
 
-REQUIRED_USE="^^ ( python_single_target_python3_10 python_single_target_python3_11 python_single_target_python3_12 python_single_target_python3_13 )
+REQUIRED_USE="^^ ( python_single_target_python3_12 python_single_target_python3_13 python_single_target_python3_14 )
 ^^ ( nvidia amd intel ipex cpu )
 rdna2? ( amd )
 rdna3? ( amd )
@@ -182,11 +181,11 @@ pkg_config() {
             if use python_single_target_python3_13; then
                 PYTHON_EXECUTABLE="python3.13"
             fi
-            if use python_single_target_python3_11; then
-                PYTHON_EXECUTABLE="python3.11"
-            fi
-            if use python_single_target_python3_10; then
-                PYTHON_EXECUTABLE="python3.10"
+#            if use python_single_target_python3_11; then
+#                PYTHON_EXECUTABLE="python3.11"
+#            fi
+            if use python_single_target_python3_14; then
+                PYTHON_EXECUTABLE="python3.14"
             fi
             sudo -u genai ./launchtools/comfy-install-linux.sh "${GPU_TYPE}" "${PYTHON_EXECUTABLE}"
             if use amd_mae; then
