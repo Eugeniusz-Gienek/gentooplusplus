@@ -69,7 +69,7 @@ if [[ ${PV} == 9999 ]]; then
 	KEYWORDS=""
     MY_PV=${PV//_}
     MY_P=${PN}-${MY_PV}
-    MY_PN="sd-sarmui-web"
+    MY_PN="sd-swarmui-web"
     S="${WORKDIR}"
 else
     MY_PV="${PV//_}"
@@ -98,6 +98,13 @@ src_install() {
     else
         cp -R -f "${WORKDIR}/SwarmUI-${MY_PV}-Beta/." "${D}${INSTALL_DIR}" || die "Install failed!"
     fi
+
+    if [[ ${PV} == 9999 ]]; then
+        git --git-dir="${D}${INSTALL_DIR}/.git" remote add origin "https://github.com/mcmonkeyprojects/SwarmUI.git"
+        git --git-dir="${D}${INSTALL_DIR}/.git" config branch.master.remote origin
+        git --git-dir="${D}${INSTALL_DIR}/.git" config branch.master.merge refs/heads/master
+    fi
+
     chown -R genai:genai "${D}${INSTALL_DIR}"
     if use nvidia; then
         cp -f "${FILESDIR}/swarmui_runner.sh" "${D}${INSTALL_DIR}"
