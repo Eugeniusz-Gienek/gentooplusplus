@@ -4,7 +4,7 @@
 EAPI=8
 
 DISTUTILS_USE_PEP517=setuptools
-PYTHON_COMPAT=( python3_{10..13} )
+PYTHON_COMPAT=( python3_{10..14} )
 
 inherit systemd desktop xdg-utils python-single-r1
 
@@ -28,9 +28,10 @@ python_single_target_python3_10
 python_single_target_python3_11
 python_single_target_python3_12
 python_single_target_python3_13
+python_single_target_python3_14
 "
 
-REQUIRED_USE="^^ ( python_single_target_python3_10 python_single_target_python3_11 python_single_target_python3_12 python_single_target_python3_13 )
+REQUIRED_USE="^^ ( python_single_target_python3_10 python_single_target_python3_11 python_single_target_python3_12 python_single_target_python3_13 python_single_target_python3_14 )
 ^^ ( nvidia amd intel ipex cpu )
 rdna2? ( amd )
 rdna3? ( amd )
@@ -114,6 +115,9 @@ src_install() {
     if use python_single_target_python3_13; then
         PYTHON_EXECUTABLE="python3.13"
     fi
+    if use python_single_target_python3_14; then
+        PYTHON_EXECUTABLE="python3.14"
+    fi
     if use python_single_target_python3_12; then
         PYTHON_EXECUTABLE="python3.12"
     fi
@@ -188,6 +192,9 @@ pkg_config() {
     PYTHON_EXECUTABLE="python3.12"
     if use python_single_target_python3_13; then
         PYTHON_EXECUTABLE="python3.13"
+    fi
+    if use python_single_target_python3_14; then
+        PYTHON_EXECUTABLE="python3.14"
     fi
     if use python_single_target_python3_12; then
         PYTHON_EXECUTABLE="python3.12"
