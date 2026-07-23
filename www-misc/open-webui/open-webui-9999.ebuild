@@ -129,6 +129,10 @@ pkg_postinst() {
     pip install -y black fpdf loguru asgiref
     pip install -y sentence_transformers
     pip install -y ffmpeg-downloader
+
+    pip install -y ftfy
+    pip install -y pypdf
+
     deactivate
     chown -R genai:genai "${EROOT}${INSTALL_DIR}"
     chmod 644 "${EROOT}${CONFIG_DIR}/.env"
