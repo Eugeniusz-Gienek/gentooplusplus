@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
 <pkgmetadata>
 	<maintainer type="person">
 		<email>donotspamme@example.com</email>
@@ -15,9 +15,6 @@
 		making them visible to lm-sensors and anything else reading hwmon.
 		The driver is strictly read-only.
 	</longdescription>
-	<upstream>
-		<remote-id type="github">Eugeniusz-Gienek/gigabyte-g5-ec</remote-id>
-	</upstream>
 	<use>
 		<flag name="dist-kernel">Marking for an automatic module-rebuild for a
 		distribution kernel.</flag>
@@ -25,4 +22,7 @@
 		fans as fan1 and fan2, and additionally showing the thermal zone
 		reading  (which might duplicate acpitz)</flag>
 	</use>
+	<upstream>
+		<remote-id type="github">Eugeniusz-Gienek/gigabyte-g5-ec</remote-id>
+	</upstream>
 </pkgmetadata>

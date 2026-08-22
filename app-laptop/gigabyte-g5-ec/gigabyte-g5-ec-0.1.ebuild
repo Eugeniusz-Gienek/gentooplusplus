@@ -1,5 +1,5 @@
 # Copyright 2019-2026 Gentoo Authors
-# Distributed under the terms of the GNU General Public License v3
+# Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
@@ -10,7 +10,7 @@ DESCRIPTION="HWMON driver exposing fan tachometers on Gigabyte G5 KD laptop (0x5
 HOMEPAGE="https://github.com/Eugeniusz-Gienek/gigabyte-g5-ec"
 SRC_URI="https://github.com/Eugeniusz-Gienek/gigabyte-g5-ec/archive/refs/tags/${PV}.tar.gz -> ${P}.tar.gz"
 
-LICENSE="GPL-3"
+LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64"
 IUSE="dist-kernel lm-sensors-conf"
