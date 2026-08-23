@@ -132,6 +132,7 @@ pkg_postinst() {
 
     pip install -y ftfy
     pip install -y pypdf
+    pip install -y Pillow
 
     deactivate
     chown -R genai:genai "${EROOT}${INSTALL_DIR}"
