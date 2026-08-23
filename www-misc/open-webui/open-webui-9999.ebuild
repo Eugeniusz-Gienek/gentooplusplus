@@ -19,7 +19,7 @@ SLOT="0"
 IUSE="+systemd +ollama"
 #IUSE="+systemd +nginx apache"
 
-BEPEND="virtual/pkgconfig"
+BDEPEND="virtual/pkgconfig"
 
 RDEPEND="\
     acct-user/genai\
@@ -95,7 +95,7 @@ src_install() {
 
 pkg_postinst() {
     die() { eerror "$*" 1>&2 ; exit 1; }
-    cd "${EROOT}${INSTALL_DIR}"
+    cd "${EROOT}${INSTALL_DIR}" || die "Could not reach install directory ${EROOT}${INSTALL_DIR}"
     if [ ! -f "${EROOT}${CONFIG_DIR}/.env" ]; then
         elog "Environment config file didn't exist a default one is used."
         elog "Please don't forget to adjust it according to your needs: \"${EROOT}${CONFIG_DIR}/.env\"."
@@ -115,7 +115,8 @@ pkg_postinst() {
     rm -rf build .svelte-kit node_modules
     npm install --force || die "npm install failed"
     NODE_OPTIONS="--max-old-space-size=4096" npm run build || die "frontend build failed"
-    cd ./backend
+    [[ -f build/index.html ]] || die "frontend build produced no output"
+    cd ./backend || die "Could not reach backend directory"
     ${PYTHON_EXECUTABLE} -m venv ./venv || die "Cannot install virtual environment via selected executable \"${PYTHON_EXECUTABLE}\"!"
     #${PYTHON_EXECUTABLE} -m venv ./venv || die "Cannot install virtual environment via ${PYTHON_EXECUTABLE} executable!"
     source venv/bin/activate
@@ -124,16 +125,17 @@ pkg_postinst() {
         sed -i "s,unstructured==0.16.17,unstructured>=0.16.17," "requirements.txt"
         sed -i "s,rapidocr-onnxruntime==1.4.4,rapidocr-onnxruntime>=1.4.4," "requirements.txt"
     fi
-    pip install -r requirements.txt -U
-    pip install -y uvicorn typer aiohttp anyio aiocache fastapi redis sqlalchemy itsdangerous starlette_compress starsessions requests authlib httpx markdown bs4 aiosqlite alembic mimeparse chromadb jwt pytz aiofiles pydub audioop-lts python-multipart ldap3 mcp validators langchain_community pycrdt python-socketio[asyncio_client] tiktoken ddgs boto3 azure-mgmt-storage azure-mgmt-resource azure-keyvault-secrets azure-storage-blob azure-mgmt-compute azure-identity google.cloud
-    pip install -y --upgrade google-cloud-storage
-    pip install -y black fpdf loguru asgiref
-    pip install -y sentence_transformers
-    pip install -y ffmpeg-downloader
+    pip install -r requirements.txt -U || die "Could not install requirements"
+    pip install uvicorn typer aiohttp anyio aiocache fastapi redis sqlalchemy itsdangerous starlette_compress starsessions requests authlib httpx markdown bs4 aiosqlite alembic mimeparse chromadb jwt pytz aiofiles pydub audioop-lts python-multipart ldap3 mcp validators langchain_community pycrdt python-socketio[asyncio_client] tiktoken ddgs boto3 azure-mgmt-storage azure-mgmt-resource azure-keyvault-secrets azure-storage-blob azure-mgmt-compute azure-identity || die "Could not install necessary dependencies"
+    pip install google.cloud || die "Could not install google cloud dependency"
+    pip install --upgrade google-cloud-storage || die "Error upgrading cloud-storage package"
+    pip install black fpdf loguru asgiref || die "Error installing black fpdf loguru asgiref"
+    pip install sentence_transformers || die "Error installing sentence_transformers"
+    pip install ffmpeg-downloader || die "Error installing ffmpeg-downloader"
 
-    pip install -y ftfy
-    pip install -y pypdf
-    pip install -y Pillow
+    pip install ftfy || die "Error installing ftfy"
+    pip install pypdf || die "Error installing pypdf"
+    pip install Pillow || die "Error installing Pillow"
 
     deactivate
     chown -R genai:genai "${EROOT}${INSTALL_DIR}"
@@ -183,7 +185,7 @@ pkg_prerm() {
 #        [[ -e "${EROOT}/etc/nginx/open_webui_vhost.conf" ]] && rm -f "${EROOT}/etc/nginx/open_webui_vhost.conf"
 #    fi
     einfo "Removing virtual environment and static files."
-    [[ -d "${EROOT}${INSTALL_DIR}/venv" ]] && rm -rf "${EROOT}${INSTALL_DIR}/venv"
+    [[ -d "${EROOT}${INSTALL_DIR}/backend/venv" ]] && rm -rf "${EROOT}${INSTALL_DIR}/backend/venv"
     [[ -f "${EROOT}${INSTALL_DIR}/package_version_init.txt" ]] && rm -f "${EROOT}${INSTALL_DIR}/package_version_init.txt"
 #    [[ -d "${EROOT}${INSTALL_DIR}" ]] && rm -rf "${EROOT}${INSTALL_DIR}"
 }
