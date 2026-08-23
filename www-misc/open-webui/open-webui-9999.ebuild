@@ -68,6 +68,12 @@ fi
 
 src_prepare() {
     default
+    if [[ ${PV} != 9999 ]]; then
+        cd "${WORKDIR}/${MY_P}/backend" || die "no backend dir"
+        sed -i -E "s,^unstructured==.*,unstructured>=0.16.17," requirements.txt || die "sed: unstructured"
+        sed -i -E "s,^rapidocr-onnxruntime==.*,rapidocr-onnxruntime>=1.4.4," requirements.txt || die "sed: rapidocr"
+        sed -i -E "s,^pyarrow==.*,pyarrow>=20.0.0," requirements.txt || die "sed: pyarrow"
+    fi
 }
 
 src_install() {
@@ -114,17 +120,13 @@ pkg_postinst() {
     fi
     rm -rf build .svelte-kit node_modules
     npm install --force || die "npm install failed"
-    NODE_OPTIONS="--max-old-space-size=8192" npm run build || die "frontend build failed"
+    NODE_OPTIONS="--max-old-space-size=12288" npm run build || die "frontend build failed"
     [[ -f build/index.html ]] || die "frontend build produced no output"
     cd ./backend || die "Could not reach backend directory"
     ${PYTHON_EXECUTABLE} -m venv ./venv || die "Cannot install virtual environment via selected executable \"${PYTHON_EXECUTABLE}\"!"
     #${PYTHON_EXECUTABLE} -m venv ./venv || die "Cannot install virtual environment via ${PYTHON_EXECUTABLE} executable!"
     source venv/bin/activate
     pip install --upgrade pip
-    if [[ ${PV} != 9999 ]]; then
-        sed -i "s,unstructured==0.16.17,unstructured>=0.16.17," "requirements.txt"
-        sed -i "s,rapidocr-onnxruntime==1.4.4,rapidocr-onnxruntime>=1.4.4," "requirements.txt"
-    fi
     pip install -r requirements.txt -U || die "Could not install requirements"
     pip install uvicorn typer aiohttp anyio aiocache fastapi redis sqlalchemy itsdangerous starlette_compress starsessions requests authlib httpx markdown bs4 aiosqlite alembic mimeparse chromadb jwt pytz aiofiles pydub audioop-lts python-multipart ldap3 mcp validators langchain_community pycrdt python-socketio[asyncio_client] tiktoken ddgs boto3 azure-mgmt-storage azure-mgmt-resource azure-keyvault-secrets azure-storage-blob azure-mgmt-compute azure-identity || die "Could not install necessary dependencies"
     pip install google.cloud || die "Could not install google cloud dependency"
