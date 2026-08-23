@@ -114,7 +114,7 @@ pkg_postinst() {
     fi
     rm -rf build .svelte-kit node_modules
     npm install --force || die "npm install failed"
-    NODE_OPTIONS="--max-old-space-size=4096" npm run build || die "frontend build failed"
+    NODE_OPTIONS="--max-old-space-size=8192" npm run build || die "frontend build failed"
     [[ -f build/index.html ]] || die "frontend build produced no output"
     cd ./backend || die "Could not reach backend directory"
     ${PYTHON_EXECUTABLE} -m venv ./venv || die "Cannot install virtual environment via selected executable \"${PYTHON_EXECUTABLE}\"!"
