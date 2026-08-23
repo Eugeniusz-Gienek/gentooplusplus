@@ -73,6 +73,9 @@ src_prepare() {
         sed -i -E "s,^unstructured==.*,unstructured>=0.16.17," requirements.txt || die "sed: unstructured"
         sed -i -E "s,^rapidocr-onnxruntime==.*,rapidocr-onnxruntime>=1.4.4," requirements.txt || die "sed: rapidocr"
         sed -i -E "s,^pyarrow==.*,pyarrow>=20.0.0," requirements.txt || die "sed: pyarrow"
+        # upstream pins av==14.0.1 for FIPS hosts (see their discussion #15720);
+        # no cp314 wheels below 15.1.0, and we're not FIPS, so relax it
+        sed -i -E "s,^av==.*,av>=15.1.0\,<16," requirements.txt || die "sed: av"
     fi
 }
 
@@ -127,11 +130,13 @@ pkg_postinst() {
     #${PYTHON_EXECUTABLE} -m venv ./venv || die "Cannot install virtual environment via ${PYTHON_EXECUTABLE} executable!"
     source venv/bin/activate
     pip install --upgrade pip
-    pip install -r requirements.txt -U || die "Could not install requirements"
-    pip install uvicorn typer aiohttp anyio aiocache fastapi redis sqlalchemy itsdangerous starlette_compress starsessions requests authlib httpx markdown bs4 aiosqlite alembic mimeparse chromadb jwt pytz aiofiles pydub audioop-lts python-multipart ldap3 mcp validators langchain_community pycrdt python-socketio[asyncio_client] tiktoken ddgs boto3 azure-mgmt-storage azure-mgmt-resource azure-keyvault-secrets azure-storage-blob azure-mgmt-compute azure-identity || die "Could not install necessary dependencies"
+    pip install -r requirements.txt -U --only-binary=av,pyarrow || die "Could not install requirements"
+    pip install uvicorn typer aiohttp anyio aiocache fastapi redis sqlalchemy itsdangerous starlette_compress starsessions requests authlib httpx markdown bs4 aiosqlite alembic mimeparse chromadb pytz aiofiles pydub audioop-lts python-multipart ldap3 mcp validators langchain_community pycrdt python-socketio[asyncio_client] tiktoken ddgs boto3 azure-mgmt-storage azure-mgmt-resource azure-keyvault-secrets azure-storage-blob azure-mgmt-compute azure-identity || die "Could not install necessary dependencies"
+    pip install PyJWT[crypto] || die "Could not install PyJWT"
     pip install google.cloud || die "Could not install google cloud dependency"
+    # upstream's google-cloud-storage==3.9.0 pin is broken for us; --upgrade works around it
     pip install --upgrade google-cloud-storage || die "Error upgrading cloud-storage package"
-    pip install black fpdf loguru asgiref || die "Error installing black fpdf loguru asgiref"
+    pip install black loguru asgiref || die "Error installing black loguru asgiref" # fpdf
     pip install sentence_transformers || die "Error installing sentence_transformers"
     pip install ffmpeg-downloader || die "Error installing ffmpeg-downloader"
 
