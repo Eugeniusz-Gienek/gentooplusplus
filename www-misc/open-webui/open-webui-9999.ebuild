@@ -112,8 +112,9 @@ pkg_postinst() {
             PYTHON_EXECUTABLE="python3.14"
         fi
     fi
-    npm install --force
-    npm run build
+    rm -rf build .svelte-kit node_modules
+    npm install --force || die "npm install failed"
+    NODE_OPTIONS="--max-old-space-size=4096" npm run build || die "frontend build failed"
     cd ./backend
     ${PYTHON_EXECUTABLE} -m venv ./venv || die "Cannot install virtual environment via selected executable \"${PYTHON_EXECUTABLE}\"!"
     #${PYTHON_EXECUTABLE} -m venv ./venv || die "Cannot install virtual environment via ${PYTHON_EXECUTABLE} executable!"
